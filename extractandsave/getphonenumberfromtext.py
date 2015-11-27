@@ -6,9 +6,10 @@ import xlwt
 import time
 import sys
 class mymodel(object):
-	def __init__(self):
+	def __init__(self,filename):
 		self.pat=re.compile('008869\d+')
-		self.filename=os.path.join('data','data.txt')
+		self.origfilename=filename
+		self.filename=os.path.join('D:\\david\\test\\extractandsave\\data','%s.txt'%filename)
 		self.phonenumber={}
 		self.flag=False
 		self.extractnumber()
@@ -38,10 +39,10 @@ class mymodel(object):
 				ws.col(i).width=6000 if c==u'手机' else 3000
 				
 			for i,key in enumerate(self.phonenumber.keys()):
-				if (i+1)%300==0:
-					ws.write(300,0,key)
-					ws.write(300,1,key)
-					w.save(os.path.join('result','phone-%s.xls'%(str(time.time()).replace('.',''))))
+				if (i+1)%500==0:
+					ws.write(500,0,key)
+					ws.write(500,1,key)
+					w.save(os.path.join('D:\\david\\test\\extractandsave\\result','phone-%s.xls'%(str(time.time()).replace('.',''))))
 					time.sleep(.1)
 					if i!=(len(self.phonenumber)-1):
 						w=xlwt.Workbook()
@@ -54,15 +55,15 @@ class mymodel(object):
 					else:
 						tmp=True
 				else:
-					xline=i%300+1
+					xline=i%500+1
 					ws.write(xline,0,key)
 					ws.write(xline,1,key)
 				
 			if not tmp:
-				w.save(os.path.join('result','phone-%s.xls'%(str(time.time()).replace('.',''))))
+				w.save(os.path.join('D:\\david\\test\\extractandsave\\result','phone-%s.xls'%(str(time.time()).replace('.',''))))
 	def savetotxt(self):
 		if self.flag:
-			with open(os.path.join('result','data.txt'),'w+') as f:
+			with open(os.path.join('D:\\david\\test\\extractandsave\\result','%s.txt'%(self.origfilename)),'w+') as f:
 				for key in  self.phonenumber.keys():
 					f.writelines('%s\n'%key)
 	def printphonenumbers(self):
@@ -72,7 +73,7 @@ class mymodel(object):
 		else:
 			print 'no phonenumber'
 if __name__=='__main__':
-	mm=mymodel()
+	mm=mymodel(sys.argv[1])
 #	mm.printphonenumbers()
 	mm.savetoxls()
 	mm.savetotxt()
